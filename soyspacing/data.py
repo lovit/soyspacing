@@ -39,7 +39,7 @@ def spacing(chars, tags, space='1'):
 
 def sent_to_chartags(sent, nonspace=0, space=1):
     chars = sent.replace(' ','')
-    tags = [nonspace]*(len(chars) - 1) + [1]
+    tags = [nonspace]*(len(chars) - 1) + [space]
     idx = 0
 
     for c in sent:
@@ -164,6 +164,6 @@ class FeaturizedCorpus(Corpus):
     def __iter__(self):
         with open(self.corpus_fname, encoding='utf-8') as f:
             for sent in f:
-                chars, tags = sent_to_chartags(sent.strip(), nonspace=0, space=1)
+                chars, tags = sent_to_chartags(sent.strip(), nonspace='0', space='1')
                 x = self.feature_manager.chars_to_features(chars)
                 yield x, tags
