@@ -1,6 +1,7 @@
 from collections import defaultdict
 import pickle
 import sys
+from soyspacing.hangle import normalize
 
 def normalize_text(raw_fname, normalized_fname, english=False, number=False):
     with open(raw_fname, encoding='utf-8') as fi:
@@ -50,19 +51,26 @@ def sent_to_chartags(sent, nonspace=0, space=1):
 
 class FeatureManager:
     
-    def __init__(self, template_range_begin=-2, template_range_end=2, min_count=10):
+    def __init__(self, template_range_begin=-2, template_range_end=2, 
+                min_range_length=2, max_range_length=3, min_count=10, templates=None):
         self.template_range_begin = template_range_begin
         self.template_range_end = template_range_end
+        self.min_range_length = min_range_length
+        self.max_range_length = max_range_length
         self.min_count = min_count
         self.feature_set = None
-        self.templates = self._generate_token_templates(template_range_begin, 
-                                                        template_range_end)
+        if not templates:
+            self.templates = self._generate_token_templates(template_range_begin, 
+                                                            template_range_end)
+        else:
+            self.templates = templates
 
     def _generate_token_templates(self, begin=-2, end=2):
         templates = []
         for b in range(begin, end):
             for e in range(b, end+1):
-                if (b == 0) or (e == 0):
+                length = (e - b + 1)
+                if length < self.min_range_length or length > self.max_range_length: 
                     continue
                 templates.append((b, e))
         return templates
@@ -74,34 +82,32 @@ class FeatureManager:
                 args = ((n_sent+1)/len(corpus), '%', n_sent+1, len(corpus))
                 sys.stdout.write('\rscanning features ... %.3f %s (%d in %d)' % args)
                 
-            features = self.sent_to_features(sent)
-            for feature in features:
-                counter[feature] += 1
+            chars, tags = sent_to_chartags(sent.strip())
+            x = self.chars_to_features(chars)
+            for xi in x:
+                for feature in xi:
+                    counter[feature] += 1
                 
         self.feature_set = {feature for feature, count in counter.items() if count >= self.min_count}
         args = (len(self.feature_set), self.min_count)
         print('\rscanning features was done. num features = %d (min_count = %d)' % args)
 
-    def sent_to_features(self, sent):
-        def to_feature(sent):
+    def chars_to_features(self, chars):
+        def to_feature(chars):
             x =[]
-            for i in range(len(sent)):
+            for i in range(len(chars)):
                 xi = []
-                e_max = len(sent)
+                e_max = len(chars)
                 for t in self.templates:
                     b = i + t[0]
                     e = i + t[1] + 1
                     if b < 0 or e > e_max:
                         continue
-                    if b == (e - 1):
-                        xi.append(('X[%d]' % t[0], sent[b]))
-                    else:
-                        contexts = sent[b:e] if t[0] * t[1] > 0 else sent[b:i] + sent[i+1:e]        
-                        xi.append(('X[%d,%d]' % (t[0], t[1]), tuple(contexts)))
+                    xi.append(('X[%d,%d]' % (t[0], t[1]), chars[b:e]))
                 x.append(xi)
             return x
 
-        x = to_feature(sent)
+        x = to_feature(chars)
         if self.feature_set:
             x = [[f for f in xi if f in self.feature_set] for xi in x]
         return x
@@ -111,6 +117,8 @@ class FeatureManager:
             params = {
                 'range_begin': self.template_range_begin,
                 'range_end': self.template_range_end,
+                'min_range_length': self.min_range_length,
+                'max_range_length': self.max_range_length,
                 'min_count': self.min_count,
                 'feature_set': self.feature_set,
                 'templates': self.templates
@@ -122,6 +130,8 @@ class FeatureManager:
             params = pickle.load(f)
             self.template_range_begin = params['range_begin']
             self.template_range_end = params['range_end']
+            self.min_range_length = params['min_range_length']
+            self.max_range_length = params['max_range_length']
             self.min_count = params['min_count']
             self.feature_set = params['feature_set']
             self.templates = params['templates']
@@ -133,13 +143,13 @@ class Corpus:
         self.length = 0
     
     def __iter__(self):
-        with open(self.fname, encoding='utf-8') as f:
+        with open(self.corpus_fname, encoding='utf-8') as f:
             for sent in f:
-                yield sent_to_chartags(sent, nonspace=0, space=1)
+                yield sent
                 
     def __len__(self):
         if self.length == 0:
-            with open(self.fname, encoding='utf-8') as f:
+            with open(self.corpus_fname, encoding='utf-8') as f:
                 for n_sent, _ in enumerate(f):
                     continue
                 self.length = (n_sent + 1)
@@ -152,7 +162,8 @@ class FeaturizedCorpus(Corpus):
         self.feature_manager = feature_manager
         
     def __iter__(self):
-        with open(self.fname, encoding='utf-8') as f:
+        with open(self.corpus_fname, encoding='utf-8') as f:
             for sent in f:
-                sent = sent_to_chartags(sent, nonspace=0, space=1)
-                yield self.feature_manager.sent_to_features(sent)
+                chars, tags = sent_to_chartags(sent.strip(), nonspace=0, space=1)
+                x = self.feature_manager.chars_to_features(chars)
+                yield x, tags
