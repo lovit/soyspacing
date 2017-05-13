@@ -157,13 +157,18 @@ class Corpus:
     
 class FeaturizedCorpus(Corpus):
     
-    def __init__(self, corpus_fname, feature_manager):
+    def __init__(self, corpus_fname, feature_manager, debug=False):
         super().__init__(corpus_fname)
         self.feature_manager = feature_manager
+        self.debug = debug
         
     def __iter__(self):
         with open(self.corpus_fname, encoding='utf-8') as f:
             for sent in f:
                 chars, tags = sent_to_chartags(sent.strip(), nonspace='0', space='1')
                 x = self.feature_manager.chars_to_features(chars)
+                if self.debug:
+                    yield x, tags
+                    continue
+                x = [['%s=%s'%(f[0],f[1]) for f in xi] + ['b'] for xi in x]
                 yield x, tags
