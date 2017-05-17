@@ -4,6 +4,8 @@
 # Python
 .pyc
 __pycache__/
+dist/*
+*egg-info/
 
 # Experiments
 tmp/
