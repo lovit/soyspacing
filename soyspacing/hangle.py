@@ -33,6 +33,20 @@ moum_list = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ
 doublespace_pattern = re.compile('\s+')
 repeatchars_pattern = re.compile('(\w)\\1{3,}')
 
+def normalize_text(raw_fname, normalized_fname, english=False, number=False):
+    with open(raw_fname, encoding='utf-8') as fi:
+        with open(normalized_fname, 'w', encoding='utf-8') as fo:
+            for sent in fi:
+                sent = normalize(sent, english, number)
+                if not sent:
+                    continue
+                fo.write('%s\n' % sent)
+                
+
+        else:
+            idx += 1
+    return chars, tags
+
 def normalize(doc, english=False, number=False, remove_repeat = 0):
     if remove_repeat > 0:
         doc = repeatchars_pattern.sub('\\1' * remove_repeat, doc)

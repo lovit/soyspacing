@@ -1,17 +1,7 @@
 from collections import defaultdict
 import pickle
 import sys
-from soyspacing.hangle import normalize
 
-def normalize_text(raw_fname, normalized_fname, english=False, number=False):
-    with open(raw_fname, encoding='utf-8') as fi:
-        with open(normalized_fname, 'w', encoding='utf-8') as fo:
-            for sent in fi:
-                sent = normalize(sent, english, number)
-                if not sent:
-                    continue
-                fo.write('%s\n' % sent)
-                
 def convert_to_corpus(text_fname, corpus_fname):
     with open(text_fname, encoding='utf-8') as fi:
         with open(corpus_fname, 'w', encoding='utf-8') as fo:
@@ -45,11 +35,8 @@ def sent_to_chartags(sent, nonspace=0, space=1):
     for c in sent:
         if c == ' ':
             tags[idx-1] = space
-        else:
-            idx += 1
-    return chars, tags
 
-class FeatureManager:
+class CharacterFeatureManager:
     
     def __init__(self, template_range_begin=-2, template_range_end=2, 
                 min_range_length=2, max_range_length=3, min_count=10, templates=None):
@@ -81,9 +68,8 @@ class FeatureManager:
             if n_sent % 1000 == 0:
                 args = ((n_sent+1)/len(corpus), '%', n_sent+1, len(corpus))
                 sys.stdout.write('\rscanning features ... %.3f %s (%d in %d)' % args)
-                
-            chars, tags = sent_to_chartags(sent.strip())
-            x = self.chars_to_features(chars)
+            
+            x, tags = self.sent_to_features(sent)
             for xi in x:
                 for feature in xi:
                     counter[feature] += 1
@@ -92,7 +78,7 @@ class FeatureManager:
         args = (len(self.feature_set), self.min_count)
         print('\rscanning features was done. num features = %d (min_count = %d)' % args)
 
-    def chars_to_features(self, chars):
+    def sent_to_features(self, sent, as_tuple=False):
         def to_feature(chars):
             x =[]
             for i in range(len(chars)):
@@ -103,14 +89,18 @@ class FeatureManager:
                     e = i + t[1] + 1
                     if b < 0 or e > e_max:
                         continue
-                    xi.append(('X[%d,%d]' % (t[0], t[1]), chars[b:e]))
+                    if as_tuple:
+                        xi.append(('X[%d,%d]' % (t[0], t[1]), chars[b:e]))
+                    else:
+                        xi.append('X[%d,%d]=%s' % (t[0], t[1], chars[b:e]))
                 x.append(xi)
             return x
 
+        chars, tags = sent_to_chartags(sent.strip(), nonspace='0', space='1')
         x = to_feature(chars)
         if self.feature_set:
             x = [[f for f in xi if f in self.feature_set] for xi in x]
-        return x
+        return x, tags
     
     def save(self, fname):
         with open(fname, 'wb') as f:
@@ -157,18 +147,13 @@ class Corpus:
     
 class FeaturizedCorpus(Corpus):
     
-    def __init__(self, corpus_fname, feature_manager, debug=False):
+    def __init__(self, corpus_fname, feature_manager, as_tuple=False):
         super().__init__(corpus_fname)
         self.feature_manager = feature_manager
-        self.debug = debug
+        self.as_tuple = as_tuple
         
     def __iter__(self):
         with open(self.corpus_fname, encoding='utf-8') as f:
             for sent in f:
-                chars, tags = sent_to_chartags(sent.strip(), nonspace='0', space='1')
-                x = self.feature_manager.chars_to_features(chars)
-                if self.debug:
-                    yield x, tags
-                    continue
-                x = [['%s=%s'%(f[0],f[1]) for f in xi] + ['b'] for xi in x]
+                x, tags = self.feature_manager.sent_to_features(sent, self.as_tuple)
                 yield x, tags
