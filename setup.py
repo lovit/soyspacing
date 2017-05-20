@@ -12,5 +12,6 @@ setup(
    description="Spacing Error Correction Tools",
    long_description=readme,
    install_requires=["numpy"],
-   keywords = ['spacing error correction']
+   keywords = ['spacing error correction'],
+   packages=['soyspacing']
 )

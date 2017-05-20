@@ -41,10 +41,6 @@ def normalize_text(raw_fname, normalized_fname, english=False, number=False):
                 if not sent:
                     continue
                 fo.write('%s\n' % sent)
-                
-
-        else:
-            idx += 1
     return chars, tags
 
 def normalize(doc, english=False, number=False, remove_repeat = 0):
