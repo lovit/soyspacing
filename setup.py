@@ -1,5 +1,5 @@
 from description import __version__, __author__
-from setuptools import setup
+from setuptools import setup, find_packages
 
 readme = """Spacing error correction algorithms. It contains two algorithms"""
 
@@ -13,5 +13,5 @@ setup(
    long_description=readme,
    install_requires=["numpy"],
    keywords = ['spacing error correction'],
-   packages=['soyspacing']
+   packages=find_packages()
 )
