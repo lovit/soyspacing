@@ -14,7 +14,7 @@ Soyspacing은 한국어 띄어쓰기 문제를 해결하기 위한 휴리스틱 
 
 ## Require
 
-- anything
+- numpy >= 1.12.1
 
 
 [scatter_url]: http://www.scatterlab.co.kr/

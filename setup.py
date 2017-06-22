@@ -11,7 +11,7 @@ setup(
    url='https://github.com/lovit/soyspacing',
    description="Spacing Error Correction Tools",
    long_description=readme,
-   install_requires=["numpy"],
+   install_requires=["numpy>=1.12.0"],
    keywords = ['Korean spacing error correction'],
    packages=find_packages()
 )
