@@ -1,10 +1,9 @@
 __title__ = 'soyspacing'
-__version__ = '0.1.23'
-__author__ = 'Lovit'
+__version__ = '1.0.0'
+__author__ = 'Lovit & ScatterLab'
 __license__ = 'GPL v3'
-__copyright__ = 'Copyright 2017 Lovit'
+__copyright__ = 'Copyright 2017 Lovit & ScatterLab'
 
 from . import countbase
-from . import crfsuite
 from .hangle import normalize
 from .hangle import normalize_text
