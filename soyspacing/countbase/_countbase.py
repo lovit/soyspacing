@@ -272,9 +272,9 @@ class CountSpace:
     
     def space_tag(self, doc, nonspace=0):
         '''
-            doc   = '이건 예시문장입니다'l
+            doc   = '이건 예시문장입니다'
             chars = '이건예시문장입니다'
-            tags  = list(0,1,000001)
+            tags  = list(0,1,0000001)
         '''
         chars = doc.replace(' ','')
         tags = [nonspace]*(len(chars) - 1) + [1]
