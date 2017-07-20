@@ -266,8 +266,8 @@ class CountSpace:
         return tags
     
     
-    def space(self, chars, tags):
-        return ''.join([c+' ' if t==1 else c for c,t in zip(chars, tags)]).strip()
+    def space(self, chars, tags, sep=' '):
+        return ''.join([c+sep if t==1 else c for c,t in zip(chars, tags)]).strip()
     
     
     def space_tag(self, doc, nonspace=0):
@@ -289,7 +289,7 @@ class CountSpace:
         return chars, tags
     
     
-    def correct(self, doc, verbose = False, min_count = 10, 
+    def correct(self, doc, sep=' ',verbose = False, min_count = 10, 
                 force_abs_threshold = 0.8, nonspace_threshold = -0.3, space_threshold = 0.3,
                 space_importancy = 1, rules = None, debug = False):
         '''
@@ -316,7 +316,7 @@ class CountSpace:
         
         if verbose:
             self.print_tags(tags, head = 'Input:')
-            print(self.space(chars, tags))
+            print(self.space(chars, tags, sep))
         
         # rule-based tagging
         if rules:
@@ -389,7 +389,7 @@ class CountSpace:
                 print('Unexpected bug. You are traped in infinite while loop. len(doc) = %d' % len(chars))
                 break
 
-        return self.space(chars, tags), tags
+        return self.space(chars, tags, sep), tags
 
     
     def force_tag(self, tags, length, features_list, scores_lcr, scores, force_abs_threshold, min_count, num_iter, verbose, is_updated, debug):
