@@ -289,9 +289,9 @@ class CountSpace:
         return chars, tags
     
     
-    def correct(self, doc, sep=' ',verbose = False, min_count = 10, 
-                force_abs_threshold = 0.8, nonspace_threshold = -0.3, space_threshold = 0.3,
-                space_importancy = 1, rules = None, debug = False):
+    def correct(self, doc, min_count=10, force_abs_threshold=0.8,
+                nonspace_threshold=-0.3, space_threshold=0.3, rules=None,
+                space_importancy=1, verbose=False, debug=False, sep=' '):
         '''
             doc: str
                 띄어쓰기를 할 문장
