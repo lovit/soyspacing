@@ -102,7 +102,7 @@ class CharsFrequency:
         else:
             return 0
                 
-     
+    
     def filter_tags(self, min_count):
         remove_chars = []
 
@@ -274,7 +274,7 @@ class CountSpace:
         '''
             doc   = '이건 예시문장입니다'
             chars = '이건예시문장입니다'
-            tags  = list(0,1,0000001)
+            tags  = [0,1,0,0,0,0,0,0,1]
         '''
         chars = doc.replace(' ','')
         tags = [nonspace]*(len(chars) - 1) + [1]
