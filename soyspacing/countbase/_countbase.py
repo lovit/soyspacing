@@ -17,7 +17,7 @@ import pprint
 
 class RuleDict:
 
-    def __init__(self, min_rule_length=0, max_rule_length=0, fname):
+    def __init__(self, fname, min_rule_length=0, max_rule_length=0):
         
         self.rule_dict = {}
         if isinstance(fname, list):
@@ -26,8 +26,8 @@ class RuleDict:
         else:
             self.rule_dict.update(self.load_file(fname))
             
-        self.min_rule_length = min((len(char) for char in self.rule_dict))
-        self.max_rule_length = max((len(char) for char in self.rule_dict))
+        self.min_rule_length = min((len(char) for char in self.rule_dict)) if self.rule_dict else 0
+        self.max_rule_length = max((len(char) for char in self.rule_dict)) if self.rule_dict else 0
 
 
     def load_file(self, fname):
