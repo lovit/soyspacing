@@ -21,5 +21,10 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ),
-    keywords = ['Space error correction', 'Korean spacing', 'Korean', 'Natural Language Processing'],
+    keywords = [
+        'Space-error-correction',
+        'Korean-spacing',
+        'Korean',
+        'Natural-Language-Processing'
+    ],
 )
