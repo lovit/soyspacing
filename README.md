@@ -20,42 +20,50 @@ Soyspacing은 한국어 띄어쓰기 문제를 해결하기 위한 휴리스틱 
 
 학습은 텍스트 파일 경로를 입력합니다. 
 
-    from soyspacing.countbase import RuleDict, CountSpace
+```python
+from soyspacing.countbase import RuleDict, CountSpace
 
-    corpus_fname = '../demo_model/134963_norm.txt'
-    model = CountSpace()
-    model.train(corpus_fname)
+corpus_fname = '../demo_model/134963_norm.txt'
+model = CountSpace()
+model.train(corpus_fname)
+```
 
 학습된 모델의 저장을 위해서는 모델 파일 경로를 입력합니다. JSON 형식으로 모델을 저장할 수 있습니다. 저장된 파일 용량을 고려하며 JSON 형식이 아닐 때 save / load 가 좀 더 쉽습니다.
 
-    model.save_model(model_fname, json_format=False)
+```python
+model.save_model(model_fname, json_format=False)
+```
 
 학습된 모델을 불러올 수 있습니다. 
 
-    model = CountSpace()
-    model.load_model(another_model_fname, json_format=False)
+```python
+model = CountSpace()
+model.load_model(another_model_fname, json_format=False)
+```
 
 띄어쓰기 교정을 위한 패러메터는 네 가지가 있습니다. 이를 입력하지 않으면 default value 를 이용합니다. 
 
-    verbose=False
-    mc = 10  # min_count
-    ft = 0.3 # force_abs_threshold
-    nt =-0.3 # nonspace_threshold
-    st = 0.3 # space_threshold
+```python
+verbose=False
+mc = 10  # min_count
+ft = 0.3 # force_abs_threshold
+nt =-0.3 # nonspace_threshold
+st = 0.3 # space_threshold
 
-    sent = '이건진짜좋은영화 라라랜드진짜좋은영화'
+sent = '이건진짜좋은영화 라라랜드진짜좋은영화'
 
-    # with parameters
-    sent_corrected, tags = model.correct(
-        doc=sent,
-        verbose=verbose,
-        force_abs_threshold=ft,
-        nonspace_threshold=nt,
-        space_threshold=st,
-        min_count=mc)
+# with parameters
+sent_corrected, tags = model.correct(
+    doc=sent,
+    verbose=verbose,
+    force_abs_threshold=ft,
+    nonspace_threshold=nt,
+    space_threshold=st,
+    min_count=mc)
 
-    # without parameters
-    sent_corrected, tags = model.correct(sent)
+# without parameters
+sent_corrected, tags = model.correct(sent)
+```
 
 더 자세한 내용의 Jupyter notebook 형식 tutorial 파일이 ./tutorials/에 있습니다.
 
