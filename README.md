@@ -63,6 +63,9 @@ sent_corrected, tags = model.correct(
 
 # without parameters
 sent_corrected, tags = model.correct(sent)
+
+print(sent_corrected)
+# 이건 진짜 좋은 영화 라라랜드진짜 좋은 영화
 ```
 
 더 자세한 내용의 Jupyter notebook 형식 tutorial 파일이 ./tutorials/에 있습니다.
