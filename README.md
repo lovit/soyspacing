@@ -7,7 +7,7 @@ soyspacing 은 한국어 띄어쓰기 문제를 해결하기 위한 휴리스틱
 - version = 0.1.23은 미완성된 CRF 기반 띄어쓰기 알고리즘을 포함하고 있었습니다. 
 - version = 1.0.0부터 미완성된 CRF를 지우고 휴리스틱 기반 알고리즘만 제공합니다. 
 
-현재 (1.0.4) 버전에서는 학습된 모델을 제공하지 않습니다. 띄어쓰기 교정은 이를 적용할 데이터셋의 단어 분포에 따라 적합한 모델이 다릅니다. 이러한 이유로 soyspacing 에서는 학습된 모델 대신, 학습이 가능한 패키지만을 제공합니다. 사용법은 아래의 usage 에, 더 자세한 설명은 [slides](https://raw.githubusercontent.com/lovit/soyspacing/master/tutorials/presentation.pdf) 를 참고하세요.
+현재 (1.0.15) 버전에서는 학습된 모델을 제공하지 않습니다. 띄어쓰기 교정은 이를 적용할 데이터셋의 단어 분포에 따라 적합한 모델이 다릅니다. 이러한 이유로 soyspacing 에서는 학습된 모델 대신, 학습이 가능한 패키지만을 제공합니다. 사용법은 아래의 usage 에, 더 자세한 설명은 [slides](https://raw.githubusercontent.com/lovit/soyspacing/master/tutorials/presentation.pdf) 를 참고하세요.
 
 ## Setup
 
