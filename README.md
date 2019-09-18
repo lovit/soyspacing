@@ -25,7 +25,7 @@ pip install soyspacing
 학습은 텍스트 파일 경로를 입력합니다. 
 
 ```python
-from soyspacing.countbase import RuleDict, CountSpace
+from soyspacing.countbase import CountSpace
 
 corpus_fname = '../demo_model/134963_norm.txt'
 model = CountSpace()
@@ -70,6 +70,27 @@ sent_corrected, tags = model.correct(sent)
 
 print(sent_corrected)
 # 이건 진짜 좋은 영화 라라랜드진짜 좋은 영화
+```
+
+특정 단어, 혹은 어절의 앞 뒤를 반드시 띄거나 붙여쓴다는 규칙이 있다면 이를 적용할 수 있습니다. 아래처럼 어절과 어절 앞, 뒤에 대한 띄어쓰기 태그가 포함되어 있는 텍스트 파일을 준비합니다. `진짜` 라는 단어의 앞, 뒤는 반드시 띄어쓰기를 하고, `진`과 `짜` 사이에는 반드시 붙여쓰기를 한다는 의미입니다. 이 파일을 `rules.txt` 에 저장합니다.
+
+```
+가령	101
+진짜	101
+가게는	1001
+가게로	1001
+가게야	1001
+```
+
+위의 파일을 `RuleDict` 로 읽어온 뒤, 위의 예시를 다시 적용하면 라라랜드와 진짜 사이가 띄어졌음을 확인할 수 있습니다.
+
+```python
+from soyspacing.countbase import RuleDict
+
+rule_dict = RuleDict('filepath')
+sent_corrected, tags = model.correct(sent, rules=rule_dict)
+print(sent_corrected)
+# 이건 진짜 좋은 영화 라라랜드 진짜 좋은 영화
 ```
 
 더 자세한 내용의 Jupyter notebook 형식 tutorial 파일이 ./tutorials/에 있습니다.
