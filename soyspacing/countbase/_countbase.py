@@ -320,7 +320,9 @@ class CountSpace:
         
         # rule-based tagging
         if rules:
+            tags[-1] = None
             tags = self.rule_based_tag(rules, chars, tags, debug)
+            tags[-1] = 1
             
             if verbose:
                 self.print_tags(tags, head = 'Ruled:')
