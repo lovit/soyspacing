@@ -195,12 +195,18 @@ class CountSpace:
         return True
 
     def rule_based_tag(self, rule_dict, chars, tags, debug = False):
-        '''
-        
-        '''
+
+        def match(rule_tags, sub_tags):
+            for r, s in zip(rule_tags[1:], sub_tags):
+                if (s is None) or (r == s):
+                    continue
+                else:
+                    return False
+            return True
+
         begin = 0
         length = len(chars)
-        
+
         while begin < length:
 
             if tags[begin] != None:
@@ -215,30 +221,30 @@ class CountSpace:
                 if end >= length:
                     continue
 
-                # skip if space tag exists
-                if ( len([i for i,tag in enumerate(tags[begin:end]) if tag == None]) != window ):
-                    continue
-
                 sub_chars = chars[begin:end]
-                sub_tags = rule_dict.get_tags(sub_chars)
+                rule_tags = rule_dict.get_tags(sub_chars)
 
                 # skip if subchars does not exist in rule dictionary
-                if sub_tags == None:
+                if rule_tags == None:
+                    continue
+
+                # skip if space tag exists or not matched
+                if not match(rule_tags, tags[begin:end]):
                     continue
 
                 # skip if first rule-tag is not matched
-                if (begin > 0) and (tags[begin-1] != None) and (tags[begin-1] != sub_tags[0]):
+                if (begin > 0) and (tags[begin-1] is not None) and (tags[begin-1] != rule_tags[0]):
                     continue
 
                 # rule tagging
                 for i in range(window):
-                    tags[begin + i] = sub_tags[i+1]
+                    tags[begin + i] = rule_tags[i+1]
 
                 if begin > 0:
-                    tags[begin-1] = sub_tags[0]
+                    tags[begin-1] = rule_tags[0]
 
                 if debug:
-                    print('rule tagging (b=%d, e=%d), subchar=%s, tags=%s' % (begin, end, sub_chars, sub_tags) )
+                    print('rule tagging (b=%d, e=%d), subchar=%s, tags=%s' % (begin, end, sub_chars, rule_tags) )
 
                 begin = end - 1
                 break
